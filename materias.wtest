@@ -1,0 +1,205 @@
+import aprobacion.*
+import carrera.*
+import estudiante.*
+import gestores.*
+import materia.*
+
+describe "funcionalidades de la universidad" {
+
+    //SETTEO DE ESTADO INICIAL:
+    const medicina = new Carrera()
+    const quimica = new Materia(carrera=medicina)
+    const biologia1 = new Materia(carrera=medicina)
+    const biologia2 = new Materia(carrera=medicina, materiasCorrelativas=#{biologia1})
+    const anatomiaGeneral = new Materia(carrera=medicina)
+    const derecho = new Carrera()
+    const latin = new Materia(carrera=derecho)
+    const derechoRomano = new Materia(carrera=derecho)
+    const historiaDelDerechoArgentino = new Materia(carrera=derecho)
+    const derechoPenal1 = new Materia(carrera=derecho)
+    const derechoPenal2 = new Materia(carrera=derecho, materiasCorrelativas=#{derechoPenal1})
+    const programacion = new Carrera()
+    const progObjetos1 = new Materia(carrera=programacion, tipoPrerrequisitos = sinPrerrequisitos, anhoMateria = 1)
+    const progObjetos2 = new Materia(carrera=programacion, tipoPrerrequisitos = correlativas, 
+    materiasCorrelativas=#{progObjetos1, matematica1}, maximoEstudiantes = 3, anhoMateria = 2)
+    const progObjetos3 = new Materia(carrera=programacion, tipoPrerrequisitos = correlativas, anhoDeLasDePrerrequisitos = 2,
+    materiasCorrelativas=#{progObjetos2, basesDeDatos}, anhoMateria = 3) //setteo anhoDeLasDePrerreq y materiasCorrelat para alternar dps en tests el tipoPrerrequisitos
+    const elementosDeProgramacion = new Materia(carrera=programacion, tipoPrerrequisitos = sinPrerrequisitos, anhoMateria = 1)
+    const basesDeDatos = new Materia(carrera=programacion, tipoPrerrequisitos = sinPrerrequisitos,  anhoMateria = 2)
+    const matematica1 = new Materia(carrera=programacion, tipoPrerrequisitos = sinPrerrequisitos, anhoMateria = 1)
+    const programacionConcurrente = new Materia(carrera=programacion, tipoPrerrequisitos = correlativas, 
+    materiasCorrelativas=#{progObjetos1, basesDeDatos}, anhoMateria = 3)
+    const trabajoFinal = new Materia(carrera=programacion, tipoPrerrequisitos = creditos, creditosRequeridos = 250, anhoMateria = 4)
+    const roque = new Estudiante(carrerasCursando = #{programacion, medicina})
+    const luisa = new Estudiante(carrerasCursando = #{programacion})
+    const romina = new Estudiante(carrerasCursando = #{programacion})
+    const alicia = new Estudiante(carrerasCursando = #{programacion})
+    const ana = new Estudiante(carrerasCursando = #{programacion})
+
+    method initialize() {
+        medicina.materias(#{quimica, biologia1, biologia2, anatomiaGeneral})
+        derecho.materias(#{latin, derechoRomano, historiaDelDerechoArgentino, derechoPenal1, derechoPenal2})
+        programacion.materias(#{progObjetos1, progObjetos2, progObjetos3, elementosDeProgramacion, basesDeDatos,
+        matematica1, programacionConcurrente, trabajoFinal})
+
+        roque.inscribirseA(elementosDeProgramacion)
+        roque.registrarMateriaAprobada(elementosDeProgramacion, 7)
+        roque.inscribirseA(matematica1)
+        roque.registrarMateriaAprobada(matematica1, 4)
+        roque.inscribirseA(progObjetos1)
+        roque.registrarMateriaAprobada(progObjetos1, 7)
+        roque.inscribirseA(basesDeDatos)
+        roque.registrarMateriaAprobada(basesDeDatos, 6)
+        roque.inscribirseA(quimica)
+        roque.registrarMateriaAprobada(quimica, 7)
+        roque.inscribirseA(biologia1)
+        roque.registrarMateriaAprobada(biologia1, 7)
+
+        luisa.inscribirseA(elementosDeProgramacion)
+        luisa.registrarMateriaAprobada(elementosDeProgramacion, 7)
+        luisa.inscribirseA(progObjetos1)
+        luisa.registrarMateriaAprobada(progObjetos1, 7)
+        luisa.inscribirseA(matematica1)
+        luisa.registrarMateriaAprobada(matematica1, 7)
+
+        romina.inscribirseA(elementosDeProgramacion)
+        romina.registrarMateriaAprobada(elementosDeProgramacion, 5)
+        romina.inscribirseA(progObjetos1)
+        romina.registrarMateriaAprobada(progObjetos1, 5)
+        romina.inscribirseA(matematica1)
+        romina.registrarMateriaAprobada(matematica1, 5)
+
+        alicia.inscribirseA(elementosDeProgramacion)
+        alicia.registrarMateriaAprobada(elementosDeProgramacion, 6)
+        alicia.inscribirseA(progObjetos1)
+        alicia.registrarMateriaAprobada(progObjetos1, 6)
+        alicia.inscribirseA(matematica1)
+        alicia.registrarMateriaAprobada(matematica1, 6)
+
+        ana.inscribirseA(elementosDeProgramacion)
+        ana.registrarMateriaAprobada(elementosDeProgramacion, 5)
+    }
+   
+   test "funcionalidades básicas de roque y registrar aprobaciones" {
+    assert.equals(#{programacion, medicina}, roque.carrerasCursando())
+    assert.equals(#{quimica, biologia1, biologia2, anatomiaGeneral, progObjetos1, progObjetos2, progObjetos3, elementosDeProgramacion, 
+    basesDeDatos, matematica1, programacionConcurrente, trabajoFinal}, roque.todasLasMateriasDeSusCarreras())
+    assert.equals(6, roque.cantMateriasAprobadas())
+    assert.throwsException({roque.registrarMateriaAprobada(progObjetos2, 3)}) //no está inscrito 
+    assert.throwsException({roque.inscribirseA(basesDeDatos)}) //ya la tiene aprobada
+    assert.doesNotThrowException({roque.inscribirseA(progObjetos2)}) 
+    assert.throwsException({roque.registrarMateriaAprobada(progObjetos2, 3)}) //no es nota aprobatoria
+    assert.throwsException({roque.registrarMateriaAprobada(progObjetos2, 11)}) //no es nota aprobatoria
+    assert.doesNotThrowException({roque.registrarMateriaAprobada(progObjetos2, 4)})
+    assert.equals(7, roque.cantMateriasAprobadas())
+    assert.that(roque.tieneAprobada(progObjetos2))
+    assert.equals(6, roque.promedio())
+    assert.throwsException({roque.registrarMateriaAprobada(progObjetos2, 5)}) //tira error porque ya la aprobó y no la está cursando más
+    assert.equals(#{quimica, biologia1, biologia2, anatomiaGeneral, progObjetos1, progObjetos2, progObjetos3, 
+                    elementosDeProgramacion, basesDeDatos, matematica1, programacionConcurrente, trabajoFinal},
+                    roque.todasLasMateriasDeSusCarreras())
+    assert.equals(7, roque.cantMateriasAprobadas())
+   }
+
+   test "inscripciones 1" {
+    assert.notThat(roque.puedeInscribirseA(derechoRomano)) //no hay coincidencia con las carreras de roque
+    assert.notThat(roque.puedeInscribirseA(progObjetos1)) //ya la tiene aprobada
+    assert.notThat(roque.puedeInscribirseA(progObjetos3)) //no cumple los prerrequisitos (no aprobó las correlativas)
+    assert.that(roque.puedeInscribirseA(progObjetos2)) //tiene aprobadas las correlativas
+    roque.inscribirseA(progObjetos2)
+    assert.notThat(roque.puedeInscribirseA(progObjetos2)) //ya la está cursando
+    roque.registrarMateriaAprobada(progObjetos2, 8)
+    assert.that(roque.puedeInscribirseA(progObjetos3)) //cumple los prerrequisitos (aprobó las correlativas)
+    assert.equals(7, roque.cantMateriasAprobadas())
+   }
+
+   test "inscripciones 2 (correlatividades)" {
+    assert.that(roque.puedeInscribirseA(progObjetos2))
+    assert.that(roque.puedeInscribirseA(programacionConcurrente))
+    assert.that(roque.puedeInscribirseA(biologia2))
+   }
+
+   test "inscripciones 3 (lista de espera)" { //recordar que el máximo de estudiantes para progObjetos2 es de 3 (los otros inscritos irán a lista de espera)
+    assert.that(luisa.puedeInscribirseA(progObjetos2)) 
+    luisa.inscribirseA(progObjetos2)
+    assert.that(romina.puedeInscribirseA(progObjetos2)) 
+    romina.inscribirseA(progObjetos2)
+    assert.that(alicia.puedeInscribirseA(progObjetos2)) 
+    alicia.inscribirseA(progObjetos2)
+    assert.that(roque.puedeInscribirseA(progObjetos2)) //roque no queda efectivamente inscrito y va a la lista de espera
+    roque.inscribirseA(progObjetos2)
+    assert.equals(3, progObjetos2.alumnosCursando().size())
+    assert.that(luisa.estaEfectivamenteCursando(progObjetos2))
+    assert.that(romina.estaEfectivamenteCursando(progObjetos2))
+    assert.that(alicia.estaEfectivamenteCursando(progObjetos2))
+    assert.equals([roque], progObjetos2.listaDeEspera())
+    assert.notThat(roque.estaEfectivamenteCursando(progObjetos2))
+    assert.that(roque.estaEnListaDeEspera(progObjetos2))
+    //SI SE DA DE BAJA ROMINA:
+    assert.doesNotThrowException({romina.darseDeBajaEn(progObjetos2)})
+    assert.notThat(romina.estaEfectivamenteCursando(progObjetos2))
+    assert.equals(3, progObjetos2.alumnosCursando().size()) //sigue siendo 3 porque ahora entró roque que estaba en lista de espera
+    assert.equals([], progObjetos2.listaDeEspera())
+    assert.that(roque.estaEfectivamenteCursando(progObjetos2))
+    assert.notThat(roque.estaEnListaDeEspera(progObjetos2))
+    assert.equals(#{progObjetos2}, roque.materiasEfectivamenteCursando())
+    assert.equals(#{}, roque.materiasEnListaDeEspera())
+    assert.equals(#{programacionConcurrente}, roque.materiasCursablesDeCarrera(programacion))
+   }
+
+   test "inscripciones 4 (tipos de prerrequisitos)" {
+        assert.that(ana.puedeInscribirseA(matematica1)) //puede porque no tiene requisitos
+        assert.that(roque.puedeInscribirseA(progObjetos2)) //puede porque cumple con las correlativas
+        progObjetos3.tipoPrerrequisitos(porAnho) //ahora requerirá que se tengan aprobadas las del año anterior, o sea, 2do año
+        assert.notThat(roque.puedeInscribirseA(progObjetos3)) //de 2do año tiene aprobada basesDeDatos pero le falta progObjetos2
+        roque.inscribirseA(progObjetos2)
+        roque.registrarMateriaAprobada(progObjetos2, 6)
+        assert.that(roque.puedeInscribirseA(progObjetos3)) //ahora sí porque tiene aprobadas las 2 de 2do año
+        assert.notThat(roque.puedeInscribirseA(trabajoFinal)) //prerreq de 250 créditos. cada materia son 40, o sea, se requieren 7 materias
+                                                              //aprobadas de la carrera (acá tiene solo 5)
+        roque.inscribirseA(progObjetos3)
+        roque.registrarMateriaAprobada(progObjetos3, 5)
+        roque.inscribirseA(programacionConcurrente)
+        roque.registrarMateriaAprobada(programacionConcurrente, 7)
+        assert.that(roque.puedeInscribirseA(trabajoFinal)) //ahora sí porque tiene 280 créditos (por las 7 aprobadas de la carrera)
+   }
+
+   test "inscripciones 5 (lista de espera elitista)" {
+        progObjetos2.tipoListaDeEspera(elitista)
+        luisa.inscribirseA(progObjetos2)
+        romina.inscribirseA(progObjetos2)
+        alicia.inscribirseA(progObjetos2)
+        ana.inscribirseA(progObjetos1)
+        ana.registrarMateriaAprobada(progObjetos1, 4)
+        ana.inscribirseA(matematica1)
+        ana.registrarMateriaAprobada(matematica1, 4) //ya puede cursar progObjetos2 (cumple correlativas)
+        ana.inscribirseA(progObjetos2)
+        roque.inscribirseA(progObjetos2)
+        assert.equals(2, progObjetos2.listaDeEspera().size())
+        luisa.darseDeBajaEn(progObjetos2)
+        assert.equals(1, progObjetos2.listaDeEspera().size()) //entra alguien luisa que se dio de baja
+        assert.that(roque.promedio() > ana.promedio())
+        assert.that(roque.estaEfectivamenteCursando(progObjetos2)) //le dio el cupo a roque por tener mayor promedio que ana
+        assert.notThat(ana.estaEfectivamenteCursando(progObjetos2))
+   }
+
+   test "inscripciones 6 (lista de espera por grado de avance)" {
+        progObjetos2.tipoListaDeEspera(porGradoDeAvance)
+        luisa.inscribirseA(progObjetos2)
+        romina.inscribirseA(progObjetos2)
+        alicia.inscribirseA(progObjetos2)
+        ana.inscribirseA(progObjetos1)
+        ana.registrarMateriaAprobada(progObjetos1, 4)
+        ana.inscribirseA(matematica1)
+        ana.registrarMateriaAprobada(matematica1, 4) //ya puede cursar progObjetos2 (cumple correlativas)
+        ana.inscribirseA(progObjetos2)
+        roque.inscribirseA(progObjetos2)
+        assert.equals(2, progObjetos2.listaDeEspera().size())
+        luisa.darseDeBajaEn(progObjetos2)
+        assert.equals(1, progObjetos2.listaDeEspera().size()) //entra alguien luisa que se dio de baja
+        assert.that(roque.materiasAprobadasDeCarrera(programacion).size() > ana.materiasAprobadasDeCarrera(programacion).size())
+        assert.that(roque.estaEfectivamenteCursando(progObjetos2)) //le dio el cupo a roque por tener mayor grado de avance que ana
+        assert.notThat(ana.estaEfectivamenteCursando(progObjetos2))
+   }
+
+}

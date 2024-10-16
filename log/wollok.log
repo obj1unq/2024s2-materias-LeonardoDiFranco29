@@ -1,0 +1,15 @@
+{"level":"info","message":"⌛ Building environment","timeElapsed":143,"timestamp":"2024-10-16T07:24:25.868Z"}
+{"level":"info","message":"onRequest - WORKSPACE_URI:file:///c%3A/Users/leo2k/OneDrive/Escritorio/jetpack/2024s2-materias-LeonardoDiFranco29","timestamp":"2024-10-16T07:24:25.871Z"}
+{"level":"info","message":"⌛ Building environment","timeElapsed":177,"timestamp":"2024-10-16T07:24:26.049Z"}
+{"level":"info","message":"⌛ Building environment","timeElapsed":103,"timestamp":"2024-10-16T07:24:26.371Z"}
+{"level":"info","message":"⌛ Validating test.wtest","timeElapsed":138,"timestamp":"2024-10-16T07:24:26.593Z"}
+{"level":"info","message":"⌛ Building environment","timeElapsed":202,"timestamp":"2024-10-16T07:24:26.795Z"}
+{"level":"info","message":"⌛ Validating aprobacion.wlk","timeElapsed":111,"timestamp":"2024-10-16T07:24:26.932Z"}
+{"level":"info","message":"⌛ Validating estudiante.wlk","timeElapsed":105,"timestamp":"2024-10-16T07:24:27.038Z"}
+{"level":"info","message":"⌛ Validating carrera.wlk","timeElapsed":108,"timestamp":"2024-10-16T07:24:27.146Z"}
+{"level":"info","message":"⌛ Validating materia.wlk","timeElapsed":111,"timestamp":"2024-10-16T07:24:27.257Z"}
+{"level":"info","message":"⌛ Validating gestores.wlk","timeElapsed":106,"timestamp":"2024-10-16T07:24:27.363Z"}
+{"level":"info","message":"⌛ Validating test.wtest","timeElapsed":122,"timestamp":"2024-10-16T07:24:27.509Z"}
+{"level":"info","message":"⌛ Building environment","timeElapsed":254,"timestamp":"2024-10-16T07:25:08.754Z"}
+{"level":"info","message":"⌛ Validating test.wtest","timeElapsed":142,"timestamp":"2024-10-16T07:25:08.898Z"}
+{"failures":[],"level":"info","message":"🧪 Test runner executed on c:\\Users\\leo2k\\OneDrive\\Escritorio\\jetpack\\2024s2-materias-LeonardoDiFranco29","result":{"failed":0,"ok":7},"timeElapsed":2043,"timestamp":"2024-10-16T07:25:12.314Z"}
